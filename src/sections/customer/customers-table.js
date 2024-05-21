@@ -17,6 +17,8 @@ import {
 } from "@mui/material";
 import { Scrollbar } from "src/components/scrollbar";
 import { getInitials } from "src/utils/get-initials";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 export const CustomersTable = (props) => {
   const {
@@ -36,7 +38,7 @@ export const CustomersTable = (props) => {
 
   const selectedSome = selected.length > 0 && selected.length < items.length;
   const selectedAll = items.length > 0 && selected.length === items.length;
-
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   return (
     <Card>
       <Scrollbar>
@@ -112,9 +114,23 @@ export const CustomersTable = (props) => {
                         >
                           Edit
                         </Button>
-                        <Button color="secondary" size="small" variant="contained">
+                        <Checkbox
+                          {...label}
+                          color="primary"
+                          icon={<AddCircleIcon />}
+                          checkedIcon={<AddCircleIcon />}
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              color: '#6366f1',
+                            },
+                            '&.Mui-checked .MuiSvgIcon-root': {
+                              color: '#6366f1',
+                            },
+                          }}
+                        />
+                        {/* <Button color="secondary" size="small" variant="contained">
                           Delete
-                        </Button>
+                        </Button> */}
                       </Stack>
                     </TableCell>
                   </TableRow>
