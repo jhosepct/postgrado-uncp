@@ -21,6 +21,7 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [codeInst, setCodeInst] = useState("");
+  const [nameFile, setNameFile] = useState("");
 
   useEffect(() => {
     console.log("edit", edit);
@@ -65,6 +66,8 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
       dni,
     };
 
+  
+
     if (edit) {
       onEditStudent(newStudent);
     } else {
@@ -76,6 +79,10 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
 
   const handleChange = (event) => {
     setGender(event.target.value);
+  };
+
+  const handleFileChange = (event) => {
+    setNameFile(event.target.files[0].name);
   };
 
   return (
@@ -138,6 +145,7 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
           value={dni}
           onChange={(e) => setDni(e.target.value)}
         />
+
         <FormControl variant="filled" fullWidth>
           <InputLabel id="demo-simple-select-filled-label">Genero</InputLabel>
           <Select
@@ -150,6 +158,25 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
             <MenuItem value={"female"}>Femenino</MenuItem>
           </Select>
         </FormControl>
+        {!edit ? (
+          <>
+            <input
+              accept="image/*"
+              style={{ display: "none"}}
+              id="raised-button-file"
+              multiple
+              type="file"
+              onChange={handleFileChange}
+            />
+            <label htmlFor="raised-button-file">
+              <Button fullWidth variant="contained" style={{marginTop: "15px"}} component="span">
+                Cargar plan de tesis
+              </Button>
+              
+            <p style={{margin: '0', textAlign: 'end'}}>{nameFile}</p>
+            </label>
+          </>
+        ) : null}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
