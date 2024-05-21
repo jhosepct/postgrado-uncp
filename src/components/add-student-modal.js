@@ -66,8 +66,6 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
       dni,
     };
 
-  
-
     if (edit) {
       onEditStudent(newStudent);
     } else {
@@ -161,19 +159,19 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
         {!edit ? (
           <>
             <input
-              accept="image/*"
-              style={{ display: "none"}}
+              accept=".pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              style={{ display: "none" }}
               id="raised-button-file"
               multiple
               type="file"
               onChange={handleFileChange}
             />
             <label htmlFor="raised-button-file">
-              <Button fullWidth variant="contained" style={{marginTop: "15px"}} component="span">
+              <Button fullWidth variant="contained" style={{ marginTop: "15px" }} component="span">
                 Cargar plan de tesis
               </Button>
-              
-            <p style={{margin: '0', textAlign: 'end'}}>{nameFile}</p>
+
+              <p style={{ margin: "0", textAlign: "end" }}>{nameFile}</p>
             </label>
           </>
         ) : null}
