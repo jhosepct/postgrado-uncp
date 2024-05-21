@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -128,7 +129,23 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/login",
+        {
+          email: email,
+          password: password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Login:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    if (email !== 'e_2019200649G@uncp.edu.pe' || password !== 'password') {
       throw new Error('Please check your email and password');
     }
 
@@ -145,7 +162,7 @@ export const AuthProvider = (props) => {
       email: 'anika.visser@devias.io'
     };
 
-    dispatch({
+    dispatch({  
       type: HANDLERS.SIGN_IN,
       payload: user
     });

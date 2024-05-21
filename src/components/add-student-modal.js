@@ -11,6 +11,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import axios from "axios";
 
 const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, student }) => {
   const [name, setName] = useState("");
@@ -20,8 +21,8 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
   const [dni, setDni] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
-  const [codeInst, setCodeInst] = useState("");
-  const [nameFile, setNameFile] = useState("");
+  const [codeInts, setCodeInst] = useState("");
+  const [file, setFile] = useState("");
 
   useEffect(() => {
     console.log("edit", edit);
@@ -48,23 +49,36 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
     }
   }, [edit, student]);
 
-  const handleAddStudent = () => {
+  const handleAddStudent = async () => {
     const newStudent = {
-      id: student ? student.id : Math.random().toString(36).substr(2, 9), // Generar un ID temporal si no existe
       name,
       lastName,
       gender,
-      codeInst,
+      codeInts,
       email,
-      phone,
-      address: {
-        street: address,
-        city: "N/A",
-        state: "N/A",
-        country: "N/A",
-      },
       dni,
+      phone,
     };
+
+    const formData = new FormData();
+    formData.append('user', JSON.stringify(newStudent));
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/tesis/first-phase",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log("File uploaded successfully:", response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
 
     if (edit) {
       onEditStudent(newStudent);
@@ -80,7 +94,7 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
   };
 
   const handleFileChange = (event) => {
-    setNameFile(event.target.files[0].name);
+    setFile(event.target.files[0]);
   };
 
   return (
@@ -108,7 +122,7 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
           label="Codigo Institucional"
           type="text"
           fullWidth
-          value={codeInst}
+          value={codeInts}
           onChange={(e) => setCodeInst(e.target.value)}
         />
         <TextField
@@ -171,7 +185,7 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
                 Cargar plan de tesis
               </Button>
 
-              <p style={{ margin: "0", textAlign: "end" }}>{nameFile}</p>
+              <p style={{ margin: "0", textAlign: "end" }}>{file.name}</p>
             </label>
           </>
         ) : null}
