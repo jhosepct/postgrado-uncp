@@ -17,7 +17,6 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
   const [dni, setDni] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -25,8 +24,8 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
   const [file, setFile] = useState("");
 
   useEffect(() => {
-    console.log("edit", edit);
-    console.log("student", student);
+    //console.log("edit", edit);
+    //console.log("student", student);
     if (edit && student) {
       setName(student.name);
       setLastName(student.lastName);
@@ -34,7 +33,6 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
       setCodeInst(student.codeInst);
       setEmail(student.email);
       setPhone(student.phone);
-      setAddress(student.address.street);
       setDni(student.dni);
     } else {
       // Reset fields for adding new student
@@ -44,7 +42,6 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
       setCodeInst("");
       setEmail("");
       setPhone("");
-      setAddress("");
       setDni("");
     }
   }, [edit, student]);
@@ -141,14 +138,7 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
-        <TextField
-          margin="dense"
-          label="Dirección"
-          type="text"
-          fullWidth
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
+
         <TextField
           margin="dense"
           label="DNI"
