@@ -27,6 +27,19 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
   const [dniAsesor, setDniAsesor] = useState("");
   const [gradeAsesor, setGradeAsesor] = useState("");
 
+  const resetFields = () => {
+    setName("");
+    setLastName("");
+    setCodeInst("");
+    setEmail("");
+    setPhone("");
+    setNameAsesor("");
+    setLastNameAsesor("");
+    setEmailAsesor("");
+    setDniAsesor("");
+    setGradeAsesor("");
+  };
+
   useEffect(() => {
     if (student) {
       setName(student.name);
@@ -36,16 +49,12 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
       setPhone(student.phone);
     } else {
       // Reset fields for adding new student
-      setName("");
-      setLastName("");
-      setCodeInst("");
-      setEmail("");
-      setPhone("");
+     resetFields();
     }
   }, [student]);
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={() => {onClose(); resetFields();}}>
       <DialogTitle>{"Asignación de Asesor"}</DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
@@ -150,7 +159,7 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button onClick={() => {onClose(); resetFields();}} color="primary">
           Cancelar
         </Button>
         <Button onClick={() => console.log("Agregado")} color="primary">
