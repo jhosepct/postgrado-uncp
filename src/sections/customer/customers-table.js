@@ -34,7 +34,9 @@ export const CustomersTable = (props) => {
     rowsPerPage = 0,
     selected = [],
     onEditStudent = () => {},
+    onAsignTeacher = () => {},
   } = props;
+
 
   const selectedSome = selected.length > 0 && selected.length < items.length;
   const selectedAll = items.length > 0 && selected.length === items.length;
@@ -114,20 +116,22 @@ export const CustomersTable = (props) => {
                         >
                           Edit
                         </Button>
-                        <Checkbox
-                          {...label}
-                          color="primary"
-                          icon={<AddCircleIcon />}
-                          checkedIcon={<AddCircleIcon />}
-                          sx={{
-                            '& .MuiSvgIcon-root': {
-                              color: '#6366f1',
-                            },
-                            '&.Mui-checked .MuiSvgIcon-root': {
-                              color: '#6366f1',
-                            },
-                          }}
-                        />
+                        <span onClick={() => onAsignTeacher(customer)}>
+                          <Checkbox
+                            {...label}
+                            color="primary"
+                            icon={<AddCircleIcon />}
+                            checkedIcon={<AddCircleIcon />}
+                            sx={{
+                              '& .MuiSvgIcon-root': {
+                                color: '#6366f1',
+                              },
+                              '&.Mui-checked .MuiSvgIcon-root': {
+                                color: '#6366f1',
+                              },
+                            }}
+                          />
+                        </span>
                         {/* <Button color="secondary" size="small" variant="contained">
                           Delete
                         </Button> */}
