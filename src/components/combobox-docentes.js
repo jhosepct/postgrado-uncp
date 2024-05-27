@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField } from '@mui/material';
 import axios from 'axios';
 
-const ComboBoxDocentes = ({ setNameAsesor, setLastNameAsesor,setDniAsesor, setEmailAsesor, setGradeAsesor }) => {
+const ComboBoxDocentes = ({ setIdAsesor, setNameAsesor, setLastNameAsesor,setDniAsesor, setEmailAsesor, setGradeAsesor }) => {
   const [docentes, setDocentes] = useState([]);
   const [selectedDocente, setSelectedDocente] = useState();
   const fetchDocentes = async () => {
@@ -43,6 +43,7 @@ const ComboBoxDocentes = ({ setNameAsesor, setLastNameAsesor,setDniAsesor, setEm
 
   const handleSelectChange = async (event) => {
     const selectedId = event.target.value;
+    setIdAsesor(selectedId);
     setSelectedDocente(selectedId);
     if (selectedId) {
       await getDocenteById(selectedId);

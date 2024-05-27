@@ -21,11 +21,13 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
 
 
   //Datos del asesor
+  const [idAsesor, setIdAsesor] = useState("");
   const [nameAsesor, setNameAsesor] = useState("");
   const [lastNameAsesor, setLastNameAsesor] = useState("");
   const [emailAsesor, setEmailAsesor] = useState("");
   const [dniAsesor, setDniAsesor] = useState("");
   const [gradeAsesor, setGradeAsesor] = useState("");
+
 
   const resetFields = () => {
     setName("");
@@ -52,6 +54,24 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
      resetFields();
     }
   }, [student]);
+
+  const sendAsignation = async () => {
+    const newAsesor = {
+      userId: student.id,
+      docenteId: idAsesor
+    };
+    try {
+      const response = await axios.post('http://localhost:8000/tesis/second-phase', {
+        newAsesor
+      },{withCredentials: true});
+      console.log("Data uploaded successfully: ", response.data);
+      console.log("Asesor asignado: ", JSON.stringify(newAsesor));
+
+    } catch (error) {
+      console.error('Error fetching docentes:', error);
+    }
+    onClose();
+  }
 
   return (
     <Dialog open={open} onClose={() => {onClose(); resetFields();}}>
@@ -108,6 +128,7 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
               <DialogTitle>{"Asesor"}</DialogTitle>
               {/* Combobox para seleccionar al asesor del estudiante */}
               <ComboBoxDocentes
+                setIdAsesor={setIdAsesor}
                 setNameAsesor={setNameAsesor}
                 setLastNameAsesor={setLastNameAsesor}
                 setDniAsesor={setDniAsesor}
@@ -162,7 +183,7 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
         <Button onClick={() => {onClose(); resetFields();}} color="primary">
           Cancelar
         </Button>
-        <Button onClick={() => console.log("Agregado")} color="primary">
+        <Button onClick={sendAsignation} color="primary">
           {"Agregar"}
         </Button>
       </DialogActions>
