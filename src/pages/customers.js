@@ -14,6 +14,7 @@ import AddStudentModal from "src/components/add-student-modal";
 import AsignTeacherModal from '../components/asign-teacher-modal';
 import { useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const now = new Date();
 
@@ -46,6 +47,8 @@ const Page = () => {
   const [isModalAsigOpen, setIsModalAsigOpen] = useState(false);
   const [isEditStudentModalOpen, setIsEditStudentModalOpen] = useState(false);
   const [studentSelect, setStudentSelect] = useState(null);
+
+  const router = useRouter();
 
 
   const fetchData = async () => {
@@ -81,8 +84,11 @@ const Page = () => {
     setIsEditStudentModalOpen(false);
   };
   const handleOpenAsignTeacherModal = (student) => {
-    setStudentSelect(student);
-    setIsModalAsigOpen(true);
+
+    router.push(`/seguimiento/${student.id}`);
+    
+    /* setStudentSelect(student);
+    setIsModalAsigOpen(true); */
   }
   const handleCloseAsignTeacherModal = () => {
     setIsModalAsigOpen(false);
