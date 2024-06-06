@@ -89,26 +89,46 @@ const AsignReviewers = ({ studentId, handleClick }) => {
   }, []);
 
   const sendAsignation = async () => {
-    //realizar la logica para pasar a la siguiente step
-    handleClick();
-    console.log(newAsesor);
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:8000/tesis/second-phase",
-    //     {
-    //       newAsesor,
-    //     },
-    //     { withCredentials: true }
-    //   );
-    //   console.log("Data uploaded successfully: ", response.data);
-    //   console.log("Asesor asignado: ", JSON.stringify(newAsesor));
-    // } catch (error) {
-    //   console.error("Error fetching docentes:", error);
-    // }
-    resetFields();
+    // send a notification email
+    /* const res = await fetch("/api/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      //body: JSON.stringify(newAsesor),
+    });
+
+    
+    const data = await res.json();
+    console.log(data); */
+
+    const phaseThird = {
+      docentId1: asesor1.id.toString(),
+      docentId2: asesor2.id.toString(),
+      docentId3: asesor3.id.toString(),
+      userId: studentId,
+    };
+
+    const formData = new FormData();
+    formData.append("phaseThird", JSON.stringify(phaseThird));
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post("http://localhost:8000/tesis/third-phase", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      console.log("Data uploaded successfully: ", response.data);
+      handleClick(false);
+    } catch (error) {
+      handleClick(true);
+      console.error("Error fetching docentes:", error);
+    }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
 
@@ -124,8 +144,9 @@ const AsignReviewers = ({ studentId, handleClick }) => {
             <ComboBoxDocentes setAsesor={setAsesor2} docentes={docentes} />
             <p>Revisor 3</p>
             <ComboBoxDocentes setAsesor={setAsesor3} docentes={docentes} />
+            <br />
             <ButtonFile
-              label="Agregar"
+              label="Cargar borrador de tesis"
               handleFileChange={handleFileChange}
               fileName={file.name}
             ></ButtonFile>

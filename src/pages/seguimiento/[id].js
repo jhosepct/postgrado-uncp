@@ -1,76 +1,142 @@
-import { Button, Container, Grid, Step, StepButton, Stepper, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Container,
+  Grid,
+  Step,
+  StepButton,
+  Stepper,
+  Typography,
+  useTheme,
+  useMediaQuery,
+  CircularProgress,
+} from "@mui/material";
 import { Box } from "@mui/system";
+import axios from "axios";
 import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
-import { useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import AsignReviewers from "src/components/asign-reviewers";
 import AsignReviewersUpdated from "src/components/asign-reviewers-update";
 import AsignTeacher from "src/components/asign-teacher";
 import { Expedito } from "src/components/expedito";
 import { FechaSustentacion } from "src/components/fecha-sustentacion";
+import { StepCompleted } from "src/components/step-completed";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { AccountProfileDetails } from "src/sections/account/account-profile-details";
 
-const steps = [
-  "Asignación de asesor",
-  "Asignación de revisores",
-  "Actualizar estado revisores",
-  "Expedito",
-  "fecha de sustentación",
-];
 const Page = () => {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [steps, setSteps] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  /* useEffect(() => {
-      const id = router.query.id;
-      setStudentId(id);
-      setLoading(false);
+  const [isFinished, setFinished] = useState(false);
 
-    //llamas al servicio:
-  }, [router.query.id]); */
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await fetchFases();
+        await fetchTesisbyUser();
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const totalSteps = () => {
-    return steps.length;
+    fetchData();
+  }, []);
+
+  const fetchTesisbyUser = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/tesis/user/${router.query.id}`, {
+        withCredentials: true,
+      });
+      const data = response.data;
+
+      if (data.acta != null) {
+        console.log("Acta cargada");
+        setFinished(true);
+      } else {
+        if (data.isFaseCompleted) {
+          console.log("Fase completada", data.fase.fase);
+          handleCompletePrevious(data.fase.fase);
+          setActiveStep(data.fase.fase);
+          //handleComplete();
+        } else {
+          console.log("Fase incompleta", data.fase.fase);
+          handleCompletePrevious(data.fase.fase - 1);
+          setActiveStep(data.fase.fase - 1);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching docentes:", error);
+      setError(true);
+    }
   };
 
-  const completedSteps = () => {
-    return Object.keys(completed).length;
+  const fetchFases = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/fases", { withCredentials: true });
+      const data = response.data;
+      if (Array.isArray(data)) {
+        setSteps(data);
+      } else {
+        console.error("Error: expected array but got", data);
+        setError(true);
+      }
+    } catch (error) {
+      console.error("Error fetching fases:", error);
+      setError(true);
+    }
   };
 
-  const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
-  };
+  const totalSteps = () => steps.length;
 
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
+  const completedSteps = () => Object.keys(completed).length;
+
+  const isLastStep = () => activeStep === totalSteps() - 1;
+
+  const allStepsCompleted = () => completedSteps() === totalSteps();
 
   const handleNext = () => {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
+        ? steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
   };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
+  const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
+  const handleStep = (step) => () => setActiveStep(step);
 
   const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
+    const newCompleted = { ...completed, [activeStep]: true };
     setCompleted(newCompleted);
     handleNext();
+  };
+
+  const handleCompletePrevious = (index) => {
+    const newCompleted = { ...completed };
+    for (let i = 0; i < index; i++) {
+      newCompleted[i] = true;
+    }
+    setCompleted(newCompleted);
+  };
+
+  const handleCompleteAll = (index) => {
+    const newCompleted = {};
+    for (let i = 0; i < totalSteps(index); i++) {
+      newCompleted[i] = true;
+    }
+    setCompleted(newCompleted);
   };
 
   const handleReset = () => {
@@ -78,127 +144,164 @@ const Page = () => {
     setCompleted({});
   };
 
-  const onHandleClick = () => {
-    handleComplete();
+  const onHandleClick = (error) => {
+    if (error) {
+      setError(true);
+      setTimeout(() => setError(false), 5000);
+    } else {
+      handleComplete();
+    }
+  };
+
+  const onHandleClickFinish = (error) => {
+    if (error) {
+      setError(true);
+      setTimeout(() => setError(false), 5000);
+    } else {
+      setFinished(true);
+    }
   };
 
   const renderStep = (step) => {
     switch (step) {
       case 0:
-        return (
-          <div>
-            <AsignTeacher studentId={router.query.id} handleClick={onHandleClick}></AsignTeacher>
-          </div>
-        );
+        return <AsignTeacher studentId={router.query.id} handleClick={onHandleClick} />;
       case 1:
-        return (
-          <div>
-            <AsignReviewers
-              studentId={router.query.id}
-              handleClick={onHandleClick}
-            ></AsignReviewers>
-          </div>
-        );
+        return <AsignReviewers studentId={router.query.id} handleClick={onHandleClick} />;
       case 2:
-        return (
-          <div>
-            <AsignReviewersUpdated>
-              studentId={router.query.id}
-              handleClick={onHandleClick}
-            </AsignReviewersUpdated>
-          </div>
-        );
+        return <AsignReviewersUpdated studentId={router.query.id} handleClick={onHandleClick} />;
       case 3:
-        return (
-          <div>
-            <Grid
-                xs={12}
-                md={6}
-                lg={8}
-            >
-              <Expedito></Expedito>
-              </Grid>
-          </div>
-        );
+        return <Expedito handleClick={onHandleClick} />;
       case 4:
-        return (
-          <div>
-            <Grid
-                xs={12}
-                md={6}
-                lg={8}
-            >
-              <FechaSustentacion></FechaSustentacion>
-              </Grid>
-          </div>
-        );
+        return <FechaSustentacion handleClick={onHandleClick} />;
       default:
         return null;
     }
   };
 
+  if (loading) {
+    return (
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 8,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        py: 8,
-      }}
-    >
-      <Container maxWidth="xl" >
-        <Stepper nonLinear activeStep={activeStep}>
-          {steps.map((label, index) => (
-            <Step key={label} completed={completed[index]}>
-              <StepButton color="inherit" /* onClick={handleStep(index)} */>{label}</StepButton>
-            </Step>
-          ))}
-        </Stepper>
-        <div>
-          {allStepsCompleted() ? (
-            <Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
-              </Box>
-            </Fragment>
+    <>
+      {error && (
+        <Alert variant="filled" severity="error">
+          Ocurrió un error en el servidor
+        </Alert>
+      )}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 8,
+        }}
+      >
+        <Container maxWidth="xl">
+          {isFinished ? (
+            <div>
+            <Typography variant="h4" gutterBottom>
+              ¡Felicidades!
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Has culminado exitosamente el proceso de tu tesis. ¡Excelente trabajo!
+            </Typography>
+            <Typography variant="body2" color="textSecondary" paragraph>
+              Asegúrate de revisar todos los documentos y considera compartir tu logro con tus amigos y familiares.
+            </Typography>
+            <Box mt={4}>
+              <Button
+                variant="contained"
+                color="primary"
+                // onClick={handleDownload}
+              >
+                Descargar Tesis
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                // onClick={handleShare}
+                sx={{ ml: 2 }}
+              >
+                Compartir
+              </Button>
+            </Box>
+          </div>
           ) : (
-              <Fragment>
-              <div style={{margin: "2rem 0"}}></div>  
-              {renderStep(activeStep)}
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Button
-                  color="inherit"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
-                >
-                  Back
-                </Button>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleNext} sx={{ mr: 1 }}>
-                  Next
-                </Button>
-                {activeStep !== steps.length &&
-                  (completed[activeStep] ? (
-                    <>
-                      <Typography variant="caption" sx={{ display: "inline-block" }}>
-                        Step {activeStep + 1} already completed
-                      </Typography>
-                    </>
-                  ) : (
-                    <Button onClick={handleComplete}>
-                      {completedSteps() === totalSteps() - 1 ? "Finish" : "Complete Step"}
+            <>
+              <Stepper
+                alternativeLabel={isMobile}
+                nonLinear
+                activeStep={activeStep}
+                sx={{
+                  height: isMobile ? "147px" : "max-content",
+                  overflow: isMobile ? "auto" : "",
+                }}
+              >
+                {steps.map((step, index) => (
+                  <Step key={step.id} completed={completed[index]}>
+                    <StepButton color="inherit" onClick={handleStep(index)}>
+                      {step.name}
+                    </StepButton>
+                  </Step>
+                ))}
+              </Stepper>
+              <div>
+                {allStepsCompleted() ? (
+                  <Fragment>
+                    <StepCompleted handleClickFinish={onHandleClickFinish}></StepCompleted>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <div style={{ margin: "2rem 0" }}></div>
+                    {renderStep(activeStep)}
+                    {/* <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      Back
                     </Button>
-                  ))}
-              </Box>
-            </Fragment>
+                    <Box sx={{ flex: "1 1 auto" }} />
+                    <Button onClick={handleNext} sx={{ mr: 1 }}>
+                      Next
+                    </Button>
+                    {activeStep !== steps.length &&
+                      (completed[activeStep] ? (
+                        <>
+                          <Typography variant="caption" sx={{ display: "inline-block" }}>
+                            Step {activeStep + 1} already completed
+                          </Typography>
+                        </>
+                      ) : (
+                        <Button onClick={handleComplete}>
+                          {completedSteps() === totalSteps() - 1 ? "Finish" : "Complete Step"}
+                        </Button>
+                      ))}
+                  </Box> */}
+                  </Fragment>
+                )}
+              </div>
+            </>
           )}
-        </div>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+    </>
   );
 };
 

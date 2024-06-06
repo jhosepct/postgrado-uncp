@@ -22,51 +22,54 @@ const validationSchema = Yup.object().shape({
   lastName: Yup.string().required("Los apellidos son obligatorios"),
   gender: Yup.string().required("El género es obligatorio"),
   codeInts: Yup.string().required("El código institucional es obligatorio"),
-  email: Yup.string().email("Formato de correo electrónico inválido").required("El email es obligatorio"),
+  email: Yup.string()
+    .email("Formato de correo electrónico inválido")
+    .required("El email es obligatorio"),
   phone: Yup.string().required("El teléfono es obligatorio"),
   dni: Yup.string().required("El DNI es obligatorio"),
 });
 
-const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, student }) => {
+const AddDocenteModal = ({ open, onClose, onAddStudent, onEditStudent, edit, student }) => {
   const [emptyFile, setEmptyFile] = useState(false);
-  
+
   const formik = useFormik({
     initialValues: {
       name: edit ? student.name : "",
       lastName: edit ? student.lastName : "",
       gender: edit ? student.gender : "",
-      codeInts: edit ? student.codeInts : "",
       email: edit ? student.email : "",
-      phone: edit ? student.phone : "",
-      dni: edit ? student.dni : "", 
-      file: null,
+      dni: edit ? student.dni : "",
+      grado: edit ? student.grado : "",
+      lineaInvestigacion: edit ? student.lineaInvestigacion : "",
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log("first");
-      console.log(values);
-      const formData = new FormData();
-      formData.append("user", JSON.stringify(values));
-      formData.append("file", values.file);
-
+      const docente = {
+        name: values.name,
+        lastName: values.lastName,
+        gender: values.gender,
+        email: values.email,
+        dni: values.dni,
+        grado: values.grado,
+        lineaInvestigacion: values.lineaInvestigacion,
+      };
 
       try {
-        const response = await axios.post("http://localhost:8000/tesis/first-phase", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        const response = await axios.post("http://localhost:8000/docentes", docente, {
           withCredentials: true,
         });
         console.log("File uploaded successfully:", response.data);
-        
-        onAddStudent(response.data.user);
-  
-        onClose();
       } catch (error) {
         console.error("Error uploading file:", error);
       }
 
-      
+      if (edit) {
+        onEditStudent(values);
+      } else {
+        onAddStudent(values);
+      }
+
+      onClose();
     },
   });
 
@@ -182,4 +185,4 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
   );
 };
 
-export default AddStudentModal;
+export default AddDocenteModal;

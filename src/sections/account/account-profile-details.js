@@ -10,6 +10,7 @@ import {
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
+import { useAuth } from 'src/hooks/use-auth';
 
 const states = [
   {
@@ -31,13 +32,12 @@ const states = [
 ];
 
 export const AccountProfileDetails = () => {
+  const {user} = useAuth();
   const [values, setValues] = useState({
-    firstName: 'Anika',
-    lastName: 'Visser',
-    email: 'demo@devias.io',
+    firstName: user.name,
+    lastName: user.lastname,
+    email: user.email,
     phone: '',
-    state: 'los-angeles',
-    country: 'USA'
   });
 
   const handleChange = useCallback(
@@ -127,50 +127,14 @@ export const AccountProfileDetails = () => {
                   value={values.phone}
                 />
               </Grid>
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="Country"
-                  name="country"
-                  onChange={handleChange}
-                  required
-                  value={values.country}
-                />
-              </Grid>
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="Select State"
-                  name="state"
-                  onChange={handleChange}
-                  required
-                  select
-                  SelectProps={{ native: true }}
-                  value={values.state}
-                >
-                  {states.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
+            
             </Grid>
           </Box>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained">
-            Save details
+          <Button variant="contained" disabled>
+            Guardar detalles
           </Button>
         </CardActions>
       </Card>

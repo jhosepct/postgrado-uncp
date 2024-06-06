@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import ComboBoxDocentes from "./combobox-docentes";
 
@@ -58,23 +69,24 @@ const AsignTeacher = ({ studentId, handleClick }) => {
   }, []);
 
   const sendAsignation = async () => {
-    //realizar la logica para pasar a la siguiente step
-    handleClick();
-    console.log(newAsesor);
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:8000/tesis/second-phase",
-    //     {
-    //       newAsesor,
-    //     },
-    //     { withCredentials: true }
-    //   );
-    //   console.log("Data uploaded successfully: ", response.data);
-    //   console.log("Asesor asignado: ", JSON.stringify(newAsesor));
-    // } catch (error) {
-    //   console.error("Error fetching docentes:", error);
-    // }
-    resetFields();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/tesis/second-phase",
+        {
+          docentId: asesor.id,
+          userId: studentId,
+        },
+        { withCredentials: true }
+      );
+      console.log("Data uploaded successfully: ", response.data);
+      handleClick(false);
+    } catch (error) {
+      console.error("Error fetching docentes:", error);
+      handleClick(true);
+    }
+
+    //resetFields();
   };
 
   return (
@@ -82,7 +94,6 @@ const AsignTeacher = ({ studentId, handleClick }) => {
       <CardHeader title="Asignación de Asesor"></CardHeader>
       <CardContent>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          
           <Grid container spacing={2}>
             {/* Primera columna */}
             <Grid item xs={6}>
@@ -200,13 +211,14 @@ const AsignTeacher = ({ studentId, handleClick }) => {
               />
             </Grid>
           </Grid>
-          
         </div>
       </CardContent>
       <Divider />
       <CardActions sx={{ justifyContent: "flex-end" }}>
-            <Button variant="contained" onClick={sendAsignation}>Guardar</Button>
-          </CardActions>
+        <Button variant="contained" onClick={sendAsignation}>
+          Guardar
+        </Button>
+      </CardActions>
     </Card>
   );
 };

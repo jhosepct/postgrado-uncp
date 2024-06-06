@@ -19,7 +19,7 @@ export const items = [
     )
   },
   {
-    title: 'Customers',
+    title: 'Estudiantes',
     path: '/customers',
     icon: (
       <SvgIcon fontSize="small">
@@ -36,7 +36,7 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
+  /* {
     title: 'Companies',
     path: '/companies',
     icon: (
@@ -44,9 +44,9 @@ export const items = [
         <ShoppingBagIcon />
       </SvgIcon>
     )
-  },
+  }, */
   {
-    title: 'Account',
+    title: 'Cuenta',
     path: '/account',
     icon: (
       <SvgIcon fontSize="small">
@@ -54,7 +54,7 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
+ /*  {
     title: 'Settings',
     path: '/settings',
     icon: (
@@ -62,8 +62,8 @@ export const items = [
         <CogIcon />
       </SvgIcon>
     )
-  },
-  {
+  }, */
+  /* {
     title: 'Login',
     path: '/auth/login',
     icon: (
@@ -71,9 +71,9 @@ export const items = [
         <LockClosedIcon />
       </SvgIcon>
     )
-  },
+  }, */
   {
-    title: 'Register',
+    title: 'Registrar Admin',
     path: '/auth/register',
     icon: (
       <SvgIcon fontSize="small">
@@ -81,7 +81,7 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
+  /* {
     title: 'Error',
     path: '/404',
     icon: (
@@ -89,5 +89,5 @@ export const items = [
         <XCircleIcon />
       </SvgIcon>
     )
-  }
+  } */
 ];

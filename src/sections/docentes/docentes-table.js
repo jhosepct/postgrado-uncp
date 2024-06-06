@@ -20,7 +20,7 @@ import { getInitials } from "src/utils/get-initials";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-export const CustomersTable = (props) => {
+export const DocentesTable = (props) => {
   const {
     count = 0,
     items = [],
@@ -64,7 +64,7 @@ export const CustomersTable = (props) => {
                 <TableCell>NOMBRE</TableCell>
                 <TableCell>CORREO</TableCell>
                 <TableCell>DNI</TableCell>
-                <TableCell>CELULAR</TableCell>
+                <TableCell>LINEA DE INVESTIGACIÓN</TableCell>
                 {/* <TableCell>FECHA</TableCell> */}
                 <TableCell>ACCIONES</TableCell>
               </TableRow>
@@ -99,12 +99,12 @@ export const CustomersTable = (props) => {
                         >
                           {getInitials(customer.name)}
                         </Avatar>
-                        <Typography variant="subtitle2">{customer.name} {customer.lastName}</Typography>
+                        <Typography variant="subtitle2">{customer.grado}{customer.name} {customer.lastname}</Typography>
                       </Stack>
                     </TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.dni}</TableCell>
-                    <TableCell>{customer.phone}</TableCell>
+                    <TableCell>{customer.lineaInvestigacion?.name}</TableCell>
                     {/* <TableCell>{createdAt}</TableCell> */}
                     <TableCell>
                       <Stack alignItems="center" direction="row" spacing={2}>
@@ -117,7 +117,7 @@ export const CustomersTable = (props) => {
                         >
                           Edit
                         </Button>
-                        <span onClick={() => onAsignTeacher(customer)}>
+                        <span >
                           <Checkbox
                             {...label}
                             color="primary"
@@ -125,10 +125,10 @@ export const CustomersTable = (props) => {
                             checkedIcon={<AddCircleIcon />}
                             sx={{
                               '& .MuiSvgIcon-root': {
-                                color: '#6366f1',
+                                color: '#e2e3e5',
                               },
                               '&.Mui-checked .MuiSvgIcon-root': {
-                                color: '#6366f1',
+                                color: '#e2e3e5',
                               },
                             }}
                           />
@@ -158,7 +158,7 @@ export const CustomersTable = (props) => {
   );
 };
 
-CustomersTable.propTypes = {
+DocentesTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   onDeselectAll: PropTypes.func,

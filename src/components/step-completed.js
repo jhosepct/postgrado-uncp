@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-export const Expedito = ({handleClick}) => {
+export const StepCompleted = ({ handleClickFinish }) => {
   const router = useRouter();
   const [file, setFile] = useState({ name: "" });
   const [emptyFile, setEmptyFile] = useState(false);
@@ -31,17 +31,17 @@ export const Expedito = ({handleClick}) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("http://localhost:8000/tesis/fifth-phase", formData, {
+      const response = await axios.post("http://localhost:8000/tesis/create-acta", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
       console.log("Data uploaded successfully: ", response.data);
-      handleClick(false);
+      handleClickFinish(false);
     } catch (error) {
       console.error("Error uploading data:", error);
-      handleClick(true);
+      handleClickFinish(true);
     }
   };
 
@@ -53,11 +53,11 @@ export const Expedito = ({handleClick}) => {
     <>
       <form autoComplete="off" onSubmit={handleSubmit}>
         <Card>
-          <CardHeader title="Expedito" />
+          <CardHeader title="Etapa final" subheader="Acta de sustentación" />
           <CardContent sx={{ pt: 0 }}>
             <Box sx={{ m: 1.5, mt: 4 }}>
               <ButtonFile
-                label="Agregar Expedito"
+                label="Cargar acta de sustentación"
                 handleFileChange={(event) => handleFileChange(event)}
                 fileName={file.name}
               ></ButtonFile>
@@ -71,7 +71,7 @@ export const Expedito = ({handleClick}) => {
           <Divider />
           <CardActions sx={{ justifyContent: "flex-end" }}>
             <Button type="submit" variant="contained">
-              Guardar
+              Enviar
             </Button>
           </CardActions>
         </Card>
