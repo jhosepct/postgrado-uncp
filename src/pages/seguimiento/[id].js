@@ -55,7 +55,7 @@ const Page = () => {
 
   const fetchTesisbyUser = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/tesis/user/${router.query.id}`, {
+      const response = await axios.get(`http://localhost:8001/tesis/user/${router.query.id}`, {
         withCredentials: true,
       });
       const data = response.data;
@@ -83,7 +83,7 @@ const Page = () => {
 
   const fetchFases = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/fases", { withCredentials: true });
+      const response = await axios.get("http://localhost:8001/fases", { withCredentials: true });
       const data = response.data;
       if (Array.isArray(data)) {
         setSteps(data);

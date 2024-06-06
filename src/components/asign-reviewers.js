@@ -59,7 +59,7 @@ const AsignReviewers = ({ studentId, handleClick }) => {
 
   const fetchDocentes = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/docentes", { withCredentials: true });
+      const response = await axios.get("http://localhost:8001/docentes", { withCredentials: true });
       const data = await response.data;
       if (Array.isArray(data)) {
         setDocentes(data);
@@ -73,7 +73,7 @@ const AsignReviewers = ({ studentId, handleClick }) => {
 
   const fetchStudent = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/users/${studentId}`, {
+      const response = await axios.get(`http://localhost:8001/users/${studentId}`, {
         withCredentials: true,
       });
       const data = await response.data;
@@ -114,7 +114,7 @@ const AsignReviewers = ({ studentId, handleClick }) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("http://localhost:8000/tesis/third-phase", formData, {
+      const response = await axios.post("http://localhost:8001/tesis/third-phase", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

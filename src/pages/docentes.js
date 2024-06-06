@@ -46,7 +46,7 @@ const Page = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/docentes", { withCredentials: true });
+      const response = await axios.get("http://localhost:8001/docentes", { withCredentials: true });
       const data = await response.data;
       setData(data);
     } catch (error) {

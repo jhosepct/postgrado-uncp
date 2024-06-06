@@ -55,7 +55,7 @@ const AddDocenteModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
       };
 
       try {
-        const response = await axios.post("http://localhost:8000/docentes", docente, {
+        const response = await axios.post("http://localhost:8001/docentes", docente, {
           withCredentials: true,
         });
         console.log("File uploaded successfully:", response.data);

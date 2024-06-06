@@ -66,7 +66,7 @@ export const FechaSustentacion = ({handleClick}) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/tesis/support-date",
+        "http://localhost:8001/tesis/support-date",
         formData,
         {
           headers: {

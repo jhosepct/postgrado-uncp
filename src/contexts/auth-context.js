@@ -152,7 +152,7 @@ export const AuthProvider = (props) => {
   const signIn = async (email, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/login",
+        "http://localhost:8001/login",
         {
           email: email,
           password: password,
@@ -182,7 +182,7 @@ export const AuthProvider = (props) => {
   const signOut = async () => {
     try {
       const response = await axios.delete(
-        "http://localhost:8000/logout",
+        "http://localhost:8001/logout",
         {
           withCredentials: true,
         }

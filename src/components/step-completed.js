@@ -31,7 +31,7 @@ export const StepCompleted = ({ handleClickFinish }) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("http://localhost:8000/tesis/create-acta", formData, {
+      const response = await axios.post("http://localhost:8001/tesis/create-acta", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

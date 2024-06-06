@@ -51,7 +51,7 @@ const AddStudentModal = ({ open, onClose, onAddStudent, onEditStudent, edit, stu
 
 
       try {
-        const response = await axios.post("http://localhost:8000/tesis/first-phase", formData, {
+        const response = await axios.post("http://localhost:8001/tesis/first-phase", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

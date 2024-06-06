@@ -28,7 +28,7 @@ const AsignReviewersUpdated = ({ handleClick, studentId }) => {
 
   const fetchDocentesTesis = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/tesis/reviewers/${studentId}`, {
+      const response = await axios.get(`http://localhost:8001/tesis/reviewers/${studentId}`, {
         withCredentials: true,
       });
       const data = await response.data;
@@ -85,7 +85,7 @@ const AsignReviewersUpdated = ({ handleClick, studentId }) => {
       formData.append("userId", studentId);
 
       try {
-        const response = await axios.post("http://localhost:8000/tesis/fourth-phase", formData, {
+        const response = await axios.post("http://localhost:8001/tesis/fourth-phase", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

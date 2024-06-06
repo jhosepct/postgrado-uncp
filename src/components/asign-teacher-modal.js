@@ -61,7 +61,7 @@ const AsignTeacherModal = ({ open, onClose, student}) => {
       docenteId: idAsesor
     };
     try {
-      const response = await axios.post('http://localhost:8000/tesis/second-phase', {
+      const response = await axios.post('http://localhost:8001/tesis/second-phase', {
         newAsesor
       },{withCredentials: true});
       console.log("Data uploaded successfully: ", response.data);
